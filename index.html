@@ -17,9 +17,10 @@
         
         /* Styl listy To-Do */
         .todo-section { margin-top: 30px; text-align: center; border-top: 2px solid #334155; padding-top: 20px; }
+        .todo-section h1 { margin-top: 0; color: var(--text); } /* Spójny styl z głównym nagłówkiem */
+
         .todo-item { display: flex; align-items: center; background: #334155; padding: 12px; border-radius: 15px; margin-bottom: 10px; gap: 15px; }
         
-        /* Przezroczyste kółko zamiast checkboxa */
         .custom-checkbox { 
             width: 26px; height: 26px; 
             border: 2px solid #64748b; 
@@ -30,10 +31,9 @@
         .custom-checkbox.checked { background: var(--green); border-color: var(--green); }
         .custom-checkbox.checked::after { content: '✓'; color: white; font-size: 16px; font-weight: bold; }
 
-        .todo-text { flex-grow: 1; font-size: 1rem; color: var(--text); }
+        .todo-text { flex-grow: 1; text-align: left; font-size: 1rem; color: var(--text); }
         .todo-text.done { text-decoration: line-through; color: #94a3b8; }
 
-        /* Większy czerwony przycisk usuwania */
         .btn-delete-todo { 
             background: var(--red); color: white; 
             width: 35px; height: 35px; 
@@ -41,6 +41,7 @@
             font-size: 1.2rem; display: flex; 
             align-items: center; justify-content: center;
             box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+            cursor: pointer;
         }
 
         .slot-item { background: #334155; padding: 12px; margin: 10px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
@@ -59,7 +60,7 @@
         <button class="btn-green" onclick="createNewGame()">+ Nowe zadanie</button>
 
         <div class="todo-section">
-            <h3 style="margin-bottom: 20px; color: var(--white);">Lista do zrobienia</h3>
+            <h1 style="margin-bottom: 20px;">Lista do zrobienia</h1>
             <div id="todo-list"></div>
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <input type="text" id="todo-input" placeholder="Wpisz" style="margin: 0;">
