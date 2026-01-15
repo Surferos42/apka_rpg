@@ -7,7 +7,7 @@
 "theme_color": "#3b82f6",
 "icons": [
 {
-"src": "icon.png",
+"src": "czacha.png",
 "sizes": "192x192",
 "type": "image/png"
 },
@@ -17,4 +17,5 @@
 "type": "image/png"
 }
 ]
+
 }
