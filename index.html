@@ -15,41 +15,12 @@
         .btn-blue { background: var(--blue); color: white; width: 100%; }
         .btn-green { background: var(--green); color: white; width: 100%; }
         
-        /* Wspólny styl dla elementów list (RPG i To-Do) */
-        .slot-item, .todo-item { 
-            background: #334155; 
-            padding: 12px; 
-            margin: 10px 0; 
-            border-radius: 15px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            gap: 12px; 
-            min-height: 45px;
-        }
-
-        /* Ujednolicony czerwony przycisk usuwania (krzyżyk) */
-        .btn-delete-universal { 
-            background: var(--red); 
-            color: white; 
-            width: 35px; 
-            height: 35px; 
-            border-radius: 50%; 
-            border: none; 
-            font-size: 1.4rem; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-            cursor: pointer;
-            flex-shrink: 0;
-            line-height: 0;
-        }
-
         /* Styl listy To-Do */
         .todo-section { margin-top: 30px; text-align: center; border-top: 2px solid #334155; padding-top: 20px; }
-        .todo-section h1 { margin-top: 0; margin-bottom: 20px; color: var(--text); font-size: 1.6rem; }
+        .todo-section h1 { margin-top: 0; color: var(--text); } /* Spójny styl z głównym nagłówkiem */
 
+        .todo-item { display: flex; align-items: center; background: #334155; padding: 12px; border-radius: 15px; margin-bottom: 10px; gap: 15px; }
+        
         .custom-checkbox { 
             width: 26px; height: 26px; 
             border: 2px solid #64748b; 
@@ -63,6 +34,17 @@
         .todo-text { flex-grow: 1; text-align: left; font-size: 1rem; color: var(--text); }
         .todo-text.done { text-decoration: line-through; color: #94a3b8; }
 
+        .btn-delete-todo { 
+            background: var(--red); color: white; 
+            width: 35px; height: 35px; 
+            border-radius: 50%; border: none; 
+            font-size: 1.2rem; display: flex; 
+            align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+            cursor: pointer;
+        }
+
+        .slot-item { background: #334155; padding: 12px; margin: 10px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .slot-info { flex-grow: 1; text-align: left; }
         .progress-bar { width: 100%; height: 15px; background: #334155; border-radius: 10px; overflow: hidden; margin: 15px 0; }
         #fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--green)); width: 0%; transition: 0.3s; }
@@ -78,10 +60,10 @@
         <button class="btn-green" onclick="createNewGame()">+ Nowe zadanie</button>
 
         <div class="todo-section">
-            <h1>Lista do zrobienia</h1>
+            <h1 style="margin-bottom: 20px;">Lista do zrobienia</h1>
             <div id="todo-list"></div>
             <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <input type="text" id="todo-input" placeholder="Wpisz">
+                <input type="text" id="todo-input" placeholder="Wpisz" style="margin: 0;">
                 <button class="btn-blue" onclick="addToDo()" style="width: auto; padding: 10px 20px;">Dodaj</button>
             </div>
         </div>
@@ -113,3 +95,101 @@
                     <div class="slot-info">
                         <div class="task-title" style="font-weight:bold;">${name}</div>
                         <div style="font-size:0.7rem; color:#94a3b8;">Poziom ${lvl}</div>
+                    </div>
+                    <button class="btn-blue" style="width:auto; padding:8px 15px;" onclick="loadGame('${name}')">Graj</button>
+                    <button style="background:var(--red); color:white; border-radius:8px; border:none; padding:5px 10px;" onclick="deleteGame('${name}')">X</button>
+                `;
+                list.appendChild(div);
+            }
+        }
+
+        function renderToDo() {
+            const list = document.getElementById('todo-list');
+            list.innerHTML = '';
+            todos.forEach((todo, index) => {
+                const div = document.createElement('div');
+                div.className = 'todo-item';
+                div.innerHTML = `
+                    <div class="custom-checkbox ${todo.done ? 'checked' : ''}" onclick="toggleToDo(${index})"></div>
+                    <span class="todo-text ${todo.done ? 'done' : ''}" onclick="toggleToDo(${index})">${todo.text}</span>
+                    <button class="btn-delete-todo" onclick="deleteToDo(${index})">&times;</button>
+                `;
+                list.appendChild(div);
+            });
+            localStorage.setItem('rpg_todo', JSON.stringify(todos));
+        }
+
+        function addToDo() {
+            const input = document.getElementById('todo-input');
+            if (input.value.trim()) {
+                todos.push({ text: input.value.trim(), done: false });
+                input.value = '';
+                renderToDo();
+            }
+        }
+
+        function toggleToDo(index) {
+            todos[index].done = !todos[index].done;
+            renderToDo();
+        }
+
+        function deleteToDo(index) {
+            todos.splice(index, 1);
+            renderToDo();
+        }
+
+        function createNewGame() {
+            const name = document.getElementById('new-slot-name').value.trim();
+            if (name && !games[name]) {
+                games[name] = 0;
+                localStorage.setItem('rpg_games', JSON.stringify(games));
+                renderSlots();
+                document.getElementById('new-slot-name').value = '';
+            }
+        }
+
+        function deleteGame(name) {
+            if (confirm(`Usunąć "${name}"?`)) {
+                delete games[name];
+                localStorage.setItem('rpg_games', JSON.stringify(games));
+                renderSlots();
+            }
+        }
+
+        function loadGame(name) {
+            activeSlot = name;
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            updateUI();
+        }
+
+        function addXP() {
+            if (activeSlot) {
+                games[activeSlot] += 20;
+                localStorage.setItem('rpg_games', JSON.stringify(games));
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            const xp = games[activeSlot];
+            const lvl = Math.floor(xp / 100);
+            const progress = xp % 100;
+            document.getElementById('current-player-name').innerText = activeSlot;
+            document.getElementById('lvl-tag').innerText = `LVL ${lvl}`;
+            document.getElementById('fill').style.width = `${progress}%`;
+            document.getElementById('xp-info').innerText = `XP: ${progress} / 100`;
+        }
+
+        function logout() {
+            activeSlot = null;
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+            renderSlots();
+        }
+
+        renderSlots();
+        renderToDo();
+    </script>
+</body>
+</html>
