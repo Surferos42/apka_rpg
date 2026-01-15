@@ -57,6 +57,7 @@
             
             if (Object.keys(games).length === 0) {
                 list.innerHTML = '<p style="color: #64748b;">Brak zadań. Dodaj nowe!</p>';
+                return;
             }
 
             for (let name in games) {
@@ -65,14 +66,20 @@
                 
                 const div = document.createElement('div');
                 div.className = 'slot-item';
+                
+                // Tworzymy strukturę za pomocą bezpiecznego tekstu
                 div.innerHTML = `
                     <div class="slot-info">
-                        <div style="font-weight:bold;">${name}</div>
+                        <div class="task-title" style="font-weight:bold;"></div>
                         <div style="font-size:0.7rem; color:#94a3b8;">Poziom ${lvl}</div>
                     </div>
-                    <button class="btn-blue" style="width:auto; padding:8px 15px;" onclick="loadGame('${name}')">Otwórz</button>
-                    <button class="btn-red" onclick="deleteGame('${name}')">Usuń</button>
+                    <button class="btn-blue" style="width:auto; padding:8px 15px;" onclick="loadGame('${name.replace(/'/g, "\\'")}')">Otwórz</button>
+                    <button class="btn-red" onclick="deleteGame('${name.replace(/'/g, "\\'")}')">Usuń</button>
                 `;
+                
+                // Bezpieczne wstawianie samej nazwy (chroni przed XSS)
+                div.querySelector('.task-title').textContent = name;
+                
                 list.appendChild(div);
             }
         }
@@ -80,7 +87,7 @@
         function createNewGame() {
             const name = document.getElementById('new-slot-name').value.trim();
             if (name) {
-                if (games[name]) {
+                if (games[name] !== undefined) {
                     alert("Zadanie o tej nazwie już istnieje!");
                     return;
                 }
@@ -107,9 +114,11 @@
         }
 
         function addXP() {
-            games[activeSlot] += 20;
-            save();
-            updateUI();
+            if (activeSlot) {
+                games[activeSlot] += 20;
+                save();
+                updateUI();
+            }
         }
 
         function updateUI() {
