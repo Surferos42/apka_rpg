@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Life RPG</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="LifeRPG">
+
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #3b82f6;
+            --accent: #10b981;
+            --text: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .container {
+            width: 85%;
+            text-align: center;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        h1 { margin-bottom: 10px; font-size: 1.5rem; }
+        
+        #lvl-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        /* Pasek XP */
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background: #334155;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.4s ease-out;
+        }
+
+        #xp-text {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+
+        /* Przycisk */
+        #done-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            width: 100%;
+            box-shadow: 0 4px 0 #1d4ed8;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        #done-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 #1d4ed8;
+        }
+
+        /* Powiadomienie o Level Up */
+        #level-up-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--accent);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 100;
+            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes pop {
+            0% { transform: translate(-50%, -50%) scale(0.5); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="lvl-display">LVL 0</div>
+        
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div id="xp-text">XP: 0 / 100</div>
+
+        <button id="done-btn">ZROBIONE (+20 XP)</button>
+    </div>
+
+    <div id="level-up-modal">
+        <h2>LEVEL UP! 🎉</h2>
+        <p>Możesz odebrać swoją nagrodę!</p>
+        <button onclick="closeModal()" style="border:none; padding:10px 20px; border-radius:10px; cursor:pointer;">Super!</button>
+    </div>
+
+    <script>
+        // Inicjalizacja danych z pamięci telefonu
+        let totalXp = parseInt(localStorage.getItem('totalXp')) || 0;
+
+        function updateDisplay() {
+            const currentLevel = Math.floor(totalXp / 100);
+            const xpInLevel = totalXp % 100;
+
+            document.getElementById('lvl-display').innerText = `LVL ${currentLevel}`;
+            document.getElementById('progress-bar').style.width = `${xpInLevel}%`;
+            document.getElementById('xp-text').innerText = `XP: ${xpInLevel} / 100`;
+            
+            localStorage.setItem('totalXp', totalXp);
+        }
+
+        document.getElementById('done-btn').addEventListener('click', () => {
+            const oldLevel = Math.floor(totalXp / 100);
+            totalXp += 20;
+            const newLevel = Math.floor(totalXp / 100);
+
+            if (newLevel > oldLevel) {
+                document.getElementById('level-up-modal').style.display = 'block';
+            }
+
+            updateDisplay();
+        });
+
+        function closeModal() {
+            document.getElementById('level-up-modal').style.display = 'none';
+        }
+
+        // Pierwsze odświeżenie po załadowaniu
+        updateDisplay();
+    </script>
+</body>
+</html>
