@@ -31,20 +31,20 @@
 <body>
 
     <div id="login-screen" class="container">
-        <h1>Twoje Postacie</h1>
+        <h1>Twoje Zadania</h1>
         <div id="slots-list"></div>
         <hr style="border: 0; border-top: 1px solid #334155; margin: 20px 0;">
-        <input type="text" id="new-slot-name" placeholder="Nazwa nowej gry...">
-        <button class="btn-green" onclick="createNewGame()">+ Nowa Gra</button>
+        <input type="text" id="new-slot-name" placeholder="Nazwa nowego zadania...">
+        <button class="btn-green" onclick="createNewGame()">+ Nowe Zadanie</button>
     </div>
 
     <div id="game-screen" class="container hidden">
-        <h2 id="current-player-name">Gracz</h2>
+        <h2 id="current-player-name">Zadanie</h2>
         <div id="lvl-tag" style="font-size: 2rem; color: var(--blue); font-weight: bold;">LVL 0</div>
         <div class="progress-bar"><div id="fill"></div></div>
         <div id="xp-info" style="color: #94a3b8; margin-bottom: 20px;">XP: 0/100</div>
         <button class="btn-blue" onclick="addXP()">ZROBIONE (+20 XP)</button>
-        <button style="background:transparent; color:#64748b; font-size: 0.8rem; margin-top: 20px;" onclick="logout()">Zmień postać</button>
+        <button style="background:transparent; color:#64748b; font-size: 0.8rem; margin-top: 20px;" onclick="logout()">Wróć do listy</button>
     </div>
 
     <script>
@@ -56,7 +56,7 @@
             list.innerHTML = '';
             
             if (Object.keys(games).length === 0) {
-                list.innerHTML = '<p style="color: #64748b;">Brak postaci. Stwórz nową!</p>';
+                list.innerHTML = '<p style="color: #64748b;">Brak zadań. Dodaj nowe!</p>';
             }
 
             for (let name in games) {
@@ -68,9 +68,9 @@
                 div.innerHTML = `
                     <div class="slot-info">
                         <div style="font-weight:bold;">${name}</div>
-                        <div style="font-size:0.7rem; color:#94a3b8;">Level ${lvl}</div>
+                        <div style="font-size:0.7rem; color:#94a3b8;">Poziom ${lvl}</div>
                     </div>
-                    <button class="btn-blue" style="width:auto; padding:8px 15px;" onclick="loadGame('${name}')">Graj</button>
+                    <button class="btn-blue" style="width:auto; padding:8px 15px;" onclick="loadGame('${name}')">Otwórz</button>
                     <button class="btn-red" onclick="deleteGame('${name}')">Usuń</button>
                 `;
                 list.appendChild(div);
@@ -81,7 +81,7 @@
             const name = document.getElementById('new-slot-name').value.trim();
             if (name) {
                 if (games[name]) {
-                    alert("Postać o tej nazwie już istnieje!");
+                    alert("Zadanie o tej nazwie już istnieje!");
                     return;
                 }
                 games[name] = 0;
@@ -92,7 +92,7 @@
         }
 
         function deleteGame(name) {
-            if (confirm(`Czy na pewno chcesz usunąć postać "${name}"? Cały postęp zostanie utracony.`)) {
+            if (confirm(`Czy na pewno chcesz usunąć zadanie "${name}"?`)) {
                 delete games[name];
                 save();
                 renderSlots();
@@ -133,7 +133,6 @@
             localStorage.setItem('rpg_games', JSON.stringify(games)); 
         }
 
-        // Start aplikacji
         renderSlots();
     </script>
 </body>
