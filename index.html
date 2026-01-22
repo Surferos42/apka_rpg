@@ -47,7 +47,6 @@
 
         .hidden { display: none !important; }
 
-        /* Wyśrodkowany nagłówek bez linii */
         .main-title {
             color: #fff; 
             font-size: 16px; 
@@ -127,13 +126,12 @@
             cursor: pointer; 
             word-break: break-word;
             overflow-wrap: anywhere;
-            color: #fff;
+            color: #ffffff !important; /* Wymuszony biały kolor dla wszystkich */
         }
         .todo-text.long-text {
-            font-size: 12px;
-            color: #add8e6;
+            font-size: 12px; /* Zachowałem powiększenie dla czytelności */
         }
-        .todo-text.done { text-decoration: line-through; color: #555; }
+        .todo-text.done { text-decoration: line-through; color: #555 !important; }
 
         .btn-delete-todo {
             background: none; border: none; color: var(--red); 
@@ -197,7 +195,6 @@
     </div>
 
     <script>
-        // Logika JS pozostaje bez zmian, aby zachować funkcjonalność
         let games = JSON.parse(localStorage.getItem('rpg_games')) || {};
         let expenses = JSON.parse(localStorage.getItem('rpg_expenses')) || {};
         let todos = JSON.parse(localStorage.getItem('rpg_todo')) || [];
