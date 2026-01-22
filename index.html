@@ -47,6 +47,16 @@
 
         .hidden { display: none !important; }
 
+        /* Wyśrodkowany nagłówek bez linii */
+        .main-title {
+            color: #fff; 
+            font-size: 16px; 
+            margin-bottom: 30px; 
+            text-align: center;
+            display: block;
+            width: 100%;
+        }
+
         h1.section-title { 
             font-size: 10px; 
             line-height: 1.5;
@@ -58,7 +68,7 @@
         input { 
             width: 100%; padding: 12px; margin: 10px 0; border: 4px solid var(--border);
             background: #000; color: var(--green); box-sizing: border-box; 
-            font-family: 'Press Start 2P', cursive; font-size: 8px;
+            font-family: 'Press Start 2P', cursive; font-size: 9px;
         }
 
         button { 
@@ -90,12 +100,46 @@
         .numpad button { background: #334155; font-size: 12px; padding: 15px 0; }
         .numpad .btn-enter { grid-column: span 3; background: var(--green); font-size: 10px; }
 
-        .todo-item { display: flex; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border: 2px solid var(--border); margin-bottom: 8px; gap: 10px; }
-        .custom-checkbox { width: 20px; height: 20px; border: 3px solid var(--blue); background: #000; cursor: pointer; flex-shrink: 0; }
+        .todo-item { 
+            display: flex; 
+            align-items: center; 
+            background: rgba(0,0,0,0.2); 
+            padding: 14px; 
+            border: 2px solid var(--border); 
+            margin-bottom: 8px; 
+            gap: 14px; 
+        }
+        .custom-checkbox { 
+            width: 24px; 
+            height: 24px; 
+            border: 3px solid var(--blue); 
+            background: #000; 
+            cursor: pointer; 
+            flex-shrink: 0;
+        }
         .custom-checkbox.checked { background: var(--green); }
-        .todo-text { flex-grow: 1; text-align: left; font-size: 7px; cursor: pointer; transition: 0.2s; }
-        .todo-text:hover { color: var(--blue); }
+        
+        .todo-text { 
+            flex-grow: 1; 
+            text-align: left; 
+            font-size: 11px; 
+            line-height: 1.4; 
+            cursor: pointer; 
+            word-break: break-word;
+            overflow-wrap: anywhere;
+            color: #fff;
+        }
+        .todo-text.long-text {
+            font-size: 12px;
+            color: #add8e6;
+        }
         .todo-text.done { text-decoration: line-through; color: #555; }
+
+        .btn-delete-todo {
+            background: none; border: none; color: var(--red); 
+            font-family: 'Press Start 2P', cursive; font-size: 11px; 
+            cursor: pointer; padding: 5px;
+        }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background: var(--border); border: 2px solid var(--card); }
@@ -104,7 +148,7 @@
 <body>
 
     <div id="login-screen" class="container">
-        <h1 style="color: #fff; font-size: 16px; margin-bottom: 30px; text-decoration: underline;">LIFE RPG</h1>
+        <span class="main-title">LIFE RPG</span>
         
         <h1 class="section-title">[ WYDATKI ]</h1>
         <div id="expenses-slots"></div>
@@ -119,27 +163,27 @@
         <h1 class="section-title">[ TO-DO LIST ]</h1>
         <div id="todo-list"></div>
         <div style="display: flex; gap: 5px;">
-            <input type="text" id="todo-input" placeholder="WPISZ..." style="margin: 0;">
+            <input type="text" id="todo-input" placeholder="WPISZ..." style="margin: 0; font-size: 10px;">
             <button class="btn-blue" onclick="addToDo()">+</button>
         </div>
     </div>
 
     <div id="game-screen" class="container hidden">
-        <h2 id="current-player-name" style="font-size: 12px;">NAME</h2>
-        <div id="lvl-tag" style="font-size: 18px; color: #ffd700; margin: 20px 0;">LVL 0</div>
+        <h2 id="current-player-name" style="font-size: 12px; text-align: center;">NAME</h2>
+        <div id="lvl-tag" style="font-size: 18px; color: #ffd700; margin: 20px 0; text-align: center;">LVL 0</div>
         <div class="progress-bar"><div id="fill"></div></div>
-        <div id="xp-info" style="font-size: 8px; margin-bottom: 20px;">XP: 0/100</div>
+        <div id="xp-info" style="font-size: 8px; margin-bottom: 20px; text-align: center;">XP: 0/100</div>
         <button class="btn-blue" style="padding: 20px;" onclick="addXP()">ZROBIONE! +20XP</button>
-        <button style="background:none; border:none; color:#555; margin-top: 20px;" onclick="logout()">[ WSTECZ ]</button>
+        <button style="background:none; border:none; color:#555; margin-top: 20px; width:100%;" onclick="logout()">[ WSTECZ ]</button>
     </div>
 
     <div id="expense-screen" class="container hidden">
-        <h2 id="current-expense-title" style="font-size: 12px;">SKLEP</h2>
+        <h2 id="current-expense-title" style="font-size: 12px; text-align: center;">SKLEP</h2>
         <div class="progress-bar"><div id="money-fill" style="width: 0%; background: var(--green);"></div></div>
-        <div id="money-info" style="font-size: 12px; margin-bottom: 20px;">0/0 PLN</div>
+        <div id="money-info" style="font-size: 12px; margin-bottom: 20px; text-align: center;">0/0 PLN</div>
         <button class="btn-blue" onclick="setBudget()">USTAW LIMIT</button>
         <div id="numpad-container" class="hidden">
-            <div id="numpad-display" style="font-size: 16px; margin: 15px 0; background: #000; padding: 10px; border: 2px solid var(--blue); color: var(--green);">0</div>
+            <div id="numpad-display" style="font-size: 16px; margin: 15px 0; background: #000; padding: 10px; border: 2px solid var(--blue); color: var(--green); text-align: center;">0</div>
             <div class="numpad">
                 <button onclick="pressNum(1)">1</button><button onclick="pressNum(2)">2</button><button onclick="pressNum(3)">3</button>
                 <button onclick="pressNum(4)">4</button><button onclick="pressNum(5)">5</button><button onclick="pressNum(6)">6</button>
@@ -149,10 +193,11 @@
             </div>
         </div>
         <button id="add-expense-btn" class="btn-green" style="margin-top: 20px;" onclick="showNumpad()">DODAJ KWOTE</button>
-        <button style="background:none; border:none; color:#555; margin-top: 20px;" onclick="logout()">[ WSTECZ ]</button>
+        <button style="background:none; border:none; color:#555; margin-top: 20px; width:100%;" onclick="logout()">[ WSTECZ ]</button>
     </div>
 
     <script>
+        // Logika JS pozostaje bez zmian, aby zachować funkcjonalność
         let games = JSON.parse(localStorage.getItem('rpg_games')) || {};
         let expenses = JSON.parse(localStorage.getItem('rpg_expenses')) || {};
         let todos = JSON.parse(localStorage.getItem('rpg_todo')) || [];
@@ -173,8 +218,8 @@
                 const lvl = Math.floor(games[name] / 100);
                 list.innerHTML += `<div class="slot-item">
                     <div class="slot-info">${name}<br><span style="color:var(--blue)">LVL ${lvl}</span></div>
-                    <button class="btn-blue" onclick="loadGame('${name}')">GRAJ</button>
-                    <button class="btn-red" onclick="deleteGame('${name}')">X</button>
+                    <button class="btn-blue" style="width:auto; padding:8px;" onclick="loadGame('${name}')">GRAJ</button>
+                    <button class="btn-red" style="width:30px; padding:8px;" onclick="deleteGame('${name}')">X</button>
                 </div>`;
             }
 
@@ -183,11 +228,42 @@
             for (let name in expenses) {
                 expList.innerHTML += `<div class="slot-item">
                     <div class="slot-info">${name}</div>
-                    <button class="btn-blue" onclick="loadExpense('${name}')">GRAJ</button>
-                    <button class="btn-red" onclick="deleteExpense('${name}')">X</button>
+                    <button class="btn-blue" style="width:auto; padding:8px;" onclick="loadExpense('${name}')">GRAJ</button>
+                    <button class="btn-red" style="width:30px; padding:8px;" onclick="deleteExpense('${name}')">X</button>
                 </div>`;
             }
         }
+
+        function renderToDo() {
+            const list = document.getElementById('todo-list');
+            list.innerHTML = '';
+            todos.forEach((t, i) => {
+                const isLong = t.text.length > 32;
+                const longClass = isLong ? 'long-text' : '';
+
+                list.innerHTML += `<div class="todo-item">
+                    <div class="custom-checkbox ${t.done ? 'checked' : ''}" onclick="toggleToDo(${i})"></div>
+                    <span class="todo-text ${t.done ? 'done' : ''} ${longClass}" onclick="editToDo(${i})">${t.text}</span>
+                    <button class="btn-delete-todo" onclick="deleteToDo(${i})">X</button>
+                </div>`;
+            });
+        }
+
+        function editToDo(index) {
+            const newText = prompt("EDYTUJ ZADANIE:", todos[index].text);
+            if (newText !== null && newText.trim() !== "") {
+                todos[index].text = newText.toUpperCase().trim();
+                save(); renderToDo();
+            }
+        }
+
+        function addToDo() {
+            const val = document.getElementById('todo-input').value.toUpperCase().trim();
+            if(val) { todos.push({text: val, done: false}); save(); renderToDo(); document.getElementById('todo-input').value=''; }
+        }
+
+        function toggleToDo(i) { todos[i].done = !todos[i].done; save(); renderToDo(); }
+        function deleteToDo(i) { todos.splice(i,1); save(); renderToDo(); }
 
         function createNewGame() {
             const name = document.getElementById('new-slot-name').value.toUpperCase().trim();
@@ -235,36 +311,6 @@
             bar.style.width = Math.min(p, 100) + "%";
             bar.className = (d.spent > d.budget) ? "bg-red" : "";
         }
-
-        // --- Zaktualizowane To-Do z edycją tekstu ---
-        function renderToDo() {
-            const list = document.getElementById('todo-list');
-            list.innerHTML = '';
-            todos.forEach((t, i) => {
-                list.innerHTML += `<div class="todo-item">
-                    <div class="custom-checkbox ${t.done ? 'checked' : ''}" onclick="toggleToDo(${i})"></div>
-                    <span class="todo-text ${t.done ? 'done' : ''}" onclick="editToDo(${i})">${t.text}</span>
-                    <button style="background:none; border:none; color:var(--red); font-size:10px;" onclick="deleteToDo(${i})">X</button>
-                </div>`;
-            });
-        }
-        
-        function editToDo(index) {
-            const newText = prompt("EDYTUJ ZADANIE:", todos[index].text);
-            if (newText !== null && newText.trim() !== "") {
-                todos[index].text = newText.toUpperCase().trim();
-                save();
-                renderToDo();
-            }
-        }
-
-        function addToDo() {
-            const val = document.getElementById('todo-input').value.toUpperCase().trim();
-            if(val) { todos.push({text: val, done: false}); save(); renderToDo(); document.getElementById('todo-input').value=''; }
-        }
-        function toggleToDo(i) { todos[i].done = !todos[i].done; save(); renderToDo(); }
-        function deleteToDo(i) { todos.splice(i,1); save(); renderToDo(); }
-
         function showScreen(id) { document.querySelectorAll('.container').forEach(c=>c.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
         function logout() { showScreen('login-screen'); renderSlots(); }
         function deleteGame(n) { if(confirm('USUNĄĆ?')) { delete games[n]; save(); renderSlots(); } }
