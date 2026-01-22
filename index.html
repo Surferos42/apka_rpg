@@ -30,7 +30,7 @@
             align-items: center; 
             height: 100vh; 
             overflow: hidden; 
-            image-rendering: pixelated; /* Kluczowe dla stylu pixel art */
+            image-rendering: pixelated;
         }
 
         .container { 
@@ -51,7 +51,7 @@
             font-size: 10px; 
             line-height: 1.5;
             margin: 25px 0 15px;
-            color: #ffd700; /* Złoty kolor jak w RPG */
+            color: #ffd700;
             text-shadow: 2px 2px 0px #000;
         }
 
@@ -81,25 +81,22 @@
 
         .slot-info { flex-grow: 1; text-align: left; font-size: 8px; line-height: 1.6; }
 
-        /* Progress Bar Pixel Style */
         .progress-bar { width: 100%; height: 20px; background: #000; border: 3px solid var(--border); margin: 15px 0; position: relative; }
         #fill, #money-fill { height: 100%; transition: 0.3s; }
         #fill { background: var(--blue); }
         .bg-red { background: var(--red) !important; }
 
-        /* Numpad Pixel Style */
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; }
         .numpad button { background: #334155; font-size: 12px; padding: 15px 0; }
         .numpad .btn-enter { grid-column: span 3; background: var(--green); font-size: 10px; }
 
-        /* To-Do Pixel */
         .todo-item { display: flex; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border: 2px solid var(--border); margin-bottom: 8px; gap: 10px; }
         .custom-checkbox { width: 20px; height: 20px; border: 3px solid var(--blue); background: #000; cursor: pointer; flex-shrink: 0; }
         .custom-checkbox.checked { background: var(--green); }
-        .todo-text { flex-grow: 1; text-align: left; font-size: 7px; }
+        .todo-text { flex-grow: 1; text-align: left; font-size: 7px; cursor: pointer; transition: 0.2s; }
+        .todo-text:hover { color: var(--blue); }
         .todo-text.done { text-decoration: line-through; color: #555; }
 
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background: var(--border); border: 2px solid var(--card); }
     </style>
@@ -140,9 +137,7 @@
         <h2 id="current-expense-title" style="font-size: 12px;">SKLEP</h2>
         <div class="progress-bar"><div id="money-fill" style="width: 0%; background: var(--green);"></div></div>
         <div id="money-info" style="font-size: 12px; margin-bottom: 20px;">0/0 PLN</div>
-        
         <button class="btn-blue" onclick="setBudget()">USTAW LIMIT</button>
-
         <div id="numpad-container" class="hidden">
             <div id="numpad-display" style="font-size: 16px; margin: 15px 0; background: #000; padding: 10px; border: 2px solid var(--blue); color: var(--green);">0</div>
             <div class="numpad">
@@ -153,7 +148,6 @@
                 <button class="btn-enter" onclick="confirmExpense()">ENTER</button>
             </div>
         </div>
-
         <button id="add-expense-btn" class="btn-green" style="margin-top: 20px;" onclick="showNumpad()">DODAJ KWOTE</button>
         <button style="background:none; border:none; color:#555; margin-top: 20px;" onclick="logout()">[ WSTECZ ]</button>
     </div>
@@ -195,7 +189,6 @@
             }
         }
 
-        // --- RPG Logika ---
         function createNewGame() {
             const name = document.getElementById('new-slot-name').value.toUpperCase().trim();
             if (name && !games[name]) { games[name] = 0; save(); renderSlots(); document.getElementById('new-slot-name').value = ''; }
@@ -212,7 +205,6 @@
             document.getElementById('xp-info').innerText = `XP: ${prog}/100`;
         }
 
-        // --- Expense Logika ---
         function createNewExpense() {
             const name = document.getElementById('new-expense-name').value.toUpperCase().trim();
             if (name && !expenses[name]) { expenses[name] = { spent: 0, budget: 0 }; save(); renderSlots(); document.getElementById('new-expense-name').value = ''; }
@@ -244,18 +236,28 @@
             bar.className = (d.spent > d.budget) ? "bg-red" : "";
         }
 
-        // --- To-Do ---
+        // --- Zaktualizowane To-Do z edycją tekstu ---
         function renderToDo() {
             const list = document.getElementById('todo-list');
             list.innerHTML = '';
             todos.forEach((t, i) => {
                 list.innerHTML += `<div class="todo-item">
                     <div class="custom-checkbox ${t.done ? 'checked' : ''}" onclick="toggleToDo(${i})"></div>
-                    <span class="todo-text ${t.done ? 'done' : ''}">${t.text}</span>
+                    <span class="todo-text ${t.done ? 'done' : ''}" onclick="editToDo(${i})">${t.text}</span>
                     <button style="background:none; border:none; color:var(--red); font-size:10px;" onclick="deleteToDo(${i})">X</button>
                 </div>`;
             });
         }
+        
+        function editToDo(index) {
+            const newText = prompt("EDYTUJ ZADANIE:", todos[index].text);
+            if (newText !== null && newText.trim() !== "") {
+                todos[index].text = newText.toUpperCase().trim();
+                save();
+                renderToDo();
+            }
+        }
+
         function addToDo() {
             const val = document.getElementById('todo-input').value.toUpperCase().trim();
             if(val) { todos.push({text: val, done: false}); save(); renderToDo(); document.getElementById('todo-input').value=''; }
