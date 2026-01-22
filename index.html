@@ -3,190 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Life RPG Multi</title>
+    <title>Life RPG Pixel Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --blue: #3b82f6; --green: #10b981; --red: #ef4444; --text: #f8fafc; }
-        body { margin: 0; font-family: sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        :root { 
+            --bg: #1a1a2e; 
+            --card: #242442; 
+            --blue: #4d9be6; 
+            --green: #48cd48; 
+            --red: #e64d4d; 
+            --text: #ffffff;
+            --border: #4d4d80;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Press Start 2P', cursive; 
+            background-color: var(--bg);
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--text); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            overflow: hidden; 
+            image-rendering: pixelated; /* Kluczowe dla stylu pixel art */
+        }
+
+        .container { 
+            width: 90%; 
+            max-width: 420px;
+            background: var(--card); 
+            padding: 20px; 
+            border: 4px solid var(--border);
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.5);
+            max-height: 90vh; 
+            overflow-y: auto;
+            position: relative;
+        }
+
         .hidden { display: none !important; }
-        .container { width: 85%; background: var(--card); padding: 25px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-height: 85vh; overflow-y: auto; }
-        
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: none; background: #334155; color: white; box-sizing: border-box; }
-        button { padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+
+        h1.section-title { 
+            font-size: 10px; 
+            line-height: 1.5;
+            margin: 25px 0 15px;
+            color: #ffd700; /* Złoty kolor jak w RPG */
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        input { 
+            width: 100%; padding: 12px; margin: 10px 0; border: 4px solid var(--border);
+            background: #000; color: var(--green); box-sizing: border-box; 
+            font-family: 'Press Start 2P', cursive; font-size: 8px;
+        }
+
+        button { 
+            padding: 12px; border: 4px solid #000; font-family: 'Press Start 2P', cursive; 
+            font-size: 9px; cursor: pointer; position: relative;
+            box-shadow: inset -4px -4px 0px rgba(0,0,0,0.3);
+            margin-bottom: 5px;
+        }
+        button:active { transform: translate(2px, 2px); box-shadow: none; }
+
         .btn-blue { background: var(--blue); color: white; width: 100%; }
         .btn-green { background: var(--green); color: white; width: 100%; }
-        
-        /* Styl listy To-Do */
-        .todo-section { margin-top: 30px; text-align: center; border-top: 2px solid #334155; padding-top: 20px; }
-        .todo-section h1 { margin-top: 0; margin-bottom: 20px; color: var(--text); font-size: 1.6rem; font-weigh: bold; } /* Spójny styl z głównym nagłówkiem */
+        .btn-red { background: var(--red); color: white; }
 
-        .todo-item { display: flex; align-items: center; background: #334155; padding: 12px; border-radius: 15px; margin-bottom: 10px; gap: 15px; }
-        
-        .custom-checkbox { 
-            width: 26px; height: 26px; 
-            border: 2px solid #64748b; 
-            border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; transition: 0.2s; flex-shrink: 0;
-        }
-        .custom-checkbox.checked { background: var(--green); border-color: var(--green); }
-        .custom-checkbox.checked::after { content: '✓'; color: white; font-size: 16px; font-weight: bold; }
-
-        .todo-text { flex-grow: 1; text-align: left; font-size: 1rem; color: var(--text); }
-        .todo-text.done { text-decoration: line-through; color: #94a3b8; }
-
-        .btn-delete-todo { 
-            background: var(--red); color: white; 
-            width: 35px; height: 35px; 
-            border-radius: 50%; border: none; 
-            font-size: 1.2rem; display: flex; 
-            align-items: center; justify-content: center;
-            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-            cursor: pointer;
+        .slot-item { 
+            background: rgba(0,0,0,0.3); padding: 12px; margin: 10px 0; 
+            border: 2px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center; gap: 8px;
         }
 
-        .slot-item { background: #334155; padding: 12px; margin: 10px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-        .slot-info { flex-grow: 1; text-align: left; }
-        .progress-bar { width: 100%; height: 15px; background: #334155; border-radius: 10px; overflow: hidden; margin: 15px 0; }
-        #fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--green)); width: 0%; transition: 0.3s; }
+        .slot-info { flex-grow: 1; text-align: left; font-size: 8px; line-height: 1.6; }
+
+        /* Progress Bar Pixel Style */
+        .progress-bar { width: 100%; height: 20px; background: #000; border: 3px solid var(--border); margin: 15px 0; position: relative; }
+        #fill, #money-fill { height: 100%; transition: 0.3s; }
+        #fill { background: var(--blue); }
+        .bg-red { background: var(--red) !important; }
+
+        /* Numpad Pixel Style */
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; }
+        .numpad button { background: #334155; font-size: 12px; padding: 15px 0; }
+        .numpad .btn-enter { grid-column: span 3; background: var(--green); font-size: 10px; }
+
+        /* To-Do Pixel */
+        .todo-item { display: flex; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border: 2px solid var(--border); margin-bottom: 8px; gap: 10px; }
+        .custom-checkbox { width: 20px; height: 20px; border: 3px solid var(--blue); background: #000; cursor: pointer; flex-shrink: 0; }
+        .custom-checkbox.checked { background: var(--green); }
+        .todo-text { flex-grow: 1; text-align: left; font-size: 7px; }
+        .todo-text.done { text-decoration: line-through; color: #555; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border: 2px solid var(--card); }
     </style>
 </head>
 <body>
 
     <div id="login-screen" class="container">
-        <h1>Twoje Zadania</h1>
-        <div id="slots-list"></div>
-        <hr style="border: 0; border-top: 1px solid #334155; margin: 20px 0;">
-        <input type="text" id="new-slot-name" placeholder="Nazwa nowego zadania">
-        <button class="btn-green" onclick="createNewGame()">+ Nowe zadanie</button>
+        <h1 style="color: #fff; font-size: 16px; margin-bottom: 30px; text-decoration: underline;">LIFE RPG</h1>
+        
+        <h1 class="section-title">[ WYDATKI ]</h1>
+        <div id="expenses-slots"></div>
+        <input type="text" id="new-expense-name" placeholder="NAZWA...">
+        <button class="btn-green" onclick="createNewExpense()">+ DODAJ</button>
 
-        <div class="todo-section">
-            <h1 style="margin-bottom: 20px;">Lista do zrobienia</h1>
-            <div id="todo-list"></div>
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <input type="text" id="todo-input" placeholder="Wpisz" style="margin: 0;">
-                <button class="btn-blue" onclick="addToDo()" style="width: auto; padding: 10px 20px;">Dodaj</button>
-            </div>
+        <h1 class="section-title">[ ZADANIA ]</h1>
+        <div id="slots-list"></div>
+        <input type="text" id="new-slot-name" placeholder="ZADANIE...">
+        <button class="btn-green" onclick="createNewGame()">+ DODAJ</button>
+
+        <h1 class="section-title">[ TO-DO LIST ]</h1>
+        <div id="todo-list"></div>
+        <div style="display: flex; gap: 5px;">
+            <input type="text" id="todo-input" placeholder="WPISZ..." style="margin: 0;">
+            <button class="btn-blue" onclick="addToDo()">+</button>
         </div>
     </div>
 
     <div id="game-screen" class="container hidden">
-        <h2 id="current-player-name">Zadanie</h2>
-        <div id="lvl-tag" style="font-size: 2rem; color: var(--blue); font-weight: bold;">LVL 0</div>
+        <h2 id="current-player-name" style="font-size: 12px;">NAME</h2>
+        <div id="lvl-tag" style="font-size: 18px; color: #ffd700; margin: 20px 0;">LVL 0</div>
         <div class="progress-bar"><div id="fill"></div></div>
-        <div id="xp-info" style="color: #94a3b8; margin-bottom: 20px;">XP: 0/100</div>
-        <button class="btn-blue" onclick="addXP()">ZROBIONE +20 XP</button>
-        <button style="background:transparent; color:#64748b; font-size: 0.8rem; margin-top: 20px;" onclick="logout()">Wróć do listy</button>
+        <div id="xp-info" style="font-size: 8px; margin-bottom: 20px;">XP: 0/100</div>
+        <button class="btn-blue" style="padding: 20px;" onclick="addXP()">ZROBIONE! +20XP</button>
+        <button style="background:none; border:none; color:#555; margin-top: 20px;" onclick="logout()">[ WSTECZ ]</button>
+    </div>
+
+    <div id="expense-screen" class="container hidden">
+        <h2 id="current-expense-title" style="font-size: 12px;">SKLEP</h2>
+        <div class="progress-bar"><div id="money-fill" style="width: 0%; background: var(--green);"></div></div>
+        <div id="money-info" style="font-size: 12px; margin-bottom: 20px;">0/0 PLN</div>
+        
+        <button class="btn-blue" onclick="setBudget()">USTAW LIMIT</button>
+
+        <div id="numpad-container" class="hidden">
+            <div id="numpad-display" style="font-size: 16px; margin: 15px 0; background: #000; padding: 10px; border: 2px solid var(--blue); color: var(--green);">0</div>
+            <div class="numpad">
+                <button onclick="pressNum(1)">1</button><button onclick="pressNum(2)">2</button><button onclick="pressNum(3)">3</button>
+                <button onclick="pressNum(4)">4</button><button onclick="pressNum(5)">5</button><button onclick="pressNum(6)">6</button>
+                <button onclick="pressNum(7)">7</button><button onclick="pressNum(8)">8</button><button onclick="pressNum(9)">9</button>
+                <button onclick="pressNum('C')" style="background:var(--red)">C</button><button onclick="pressNum(0)">0</button><button onclick="pressNum('.')">.</button>
+                <button class="btn-enter" onclick="confirmExpense()">ENTER</button>
+            </div>
+        </div>
+
+        <button id="add-expense-btn" class="btn-green" style="margin-top: 20px;" onclick="showNumpad()">DODAJ KWOTE</button>
+        <button style="background:none; border:none; color:#555; margin-top: 20px;" onclick="logout()">[ WSTECZ ]</button>
     </div>
 
     <script>
         let games = JSON.parse(localStorage.getItem('rpg_games')) || {};
+        let expenses = JSON.parse(localStorage.getItem('rpg_expenses')) || {};
         let todos = JSON.parse(localStorage.getItem('rpg_todo')) || [];
         let activeSlot = null;
+        let activeExpense = null;
+        let currentInput = "";
+
+        function save() {
+            localStorage.setItem('rpg_games', JSON.stringify(games));
+            localStorage.setItem('rpg_expenses', JSON.stringify(expenses));
+            localStorage.setItem('rpg_todo', JSON.stringify(todos));
+        }
 
         function renderSlots() {
             const list = document.getElementById('slots-list');
             list.innerHTML = '';
             for (let name in games) {
-                const xp = games[name];
-                const lvl = Math.floor(xp / 100);
-                const div = document.createElement('div');
-                div.className = 'slot-item';
-                div.innerHTML = `
-                    <div class="slot-info">
-                        <div class="task-title" style="font-weight:bold;">${name}</div>
-                        <div style="font-size:0.7rem; color:#94a3b8;">Poziom ${lvl}</div>
-                    </div>
-                    <button class="btn-blue" style="width:auto; padding:8px 15px;" onclick="loadGame('${name}')">Graj</button>
-                    <button style="background:var(--red); color:white; border-radius:8px; border:none; padding:5px 10px;" onclick="deleteGame('${name}')">X</button>
-                `;
-                list.appendChild(div);
+                const lvl = Math.floor(games[name] / 100);
+                list.innerHTML += `<div class="slot-item">
+                    <div class="slot-info">${name}<br><span style="color:var(--blue)">LVL ${lvl}</span></div>
+                    <button class="btn-blue" onclick="loadGame('${name}')">GRAJ</button>
+                    <button class="btn-red" onclick="deleteGame('${name}')">X</button>
+                </div>`;
+            }
+
+            const expList = document.getElementById('expenses-slots');
+            expList.innerHTML = '';
+            for (let name in expenses) {
+                expList.innerHTML += `<div class="slot-item">
+                    <div class="slot-info">${name}</div>
+                    <button class="btn-blue" onclick="loadExpense('${name}')">GRAJ</button>
+                    <button class="btn-red" onclick="deleteExpense('${name}')">X</button>
+                </div>`;
             }
         }
 
-        function renderToDo() {
-            const list = document.getElementById('todo-list');
-            list.innerHTML = '';
-            todos.forEach((todo, index) => {
-                const div = document.createElement('div');
-                div.className = 'todo-item';
-                div.innerHTML = `
-                    <div class="custom-checkbox ${todo.done ? 'checked' : ''}" onclick="toggleToDo(${index})"></div>
-                    <span class="todo-text ${todo.done ? 'done' : ''}" onclick="toggleToDo(${index})">${todo.text}</span>
-                    <button class="btn-delete-todo" onclick="deleteToDo(${index})">&times;</button>
-                `;
-                list.appendChild(div);
-            });
-            localStorage.setItem('rpg_todo', JSON.stringify(todos));
-        }
-
-        function addToDo() {
-            const input = document.getElementById('todo-input');
-            if (input.value.trim()) {
-                todos.push({ text: input.value.trim(), done: false });
-                input.value = '';
-                renderToDo();
-            }
-        }
-
-        function toggleToDo(index) {
-            todos[index].done = !todos[index].done;
-            renderToDo();
-        }
-
-        function deleteToDo(index) {
-            todos.splice(index, 1);
-            renderToDo();
-        }
-
+        // --- RPG Logika ---
         function createNewGame() {
-            const name = document.getElementById('new-slot-name').value.trim();
-            if (name && !games[name]) {
-                games[name] = 0;
-                localStorage.setItem('rpg_games', JSON.stringify(games));
-                renderSlots();
-                document.getElementById('new-slot-name').value = '';
-            }
+            const name = document.getElementById('new-slot-name').value.toUpperCase().trim();
+            if (name && !games[name]) { games[name] = 0; save(); renderSlots(); document.getElementById('new-slot-name').value = ''; }
         }
-
-        function deleteGame(name) {
-            if (confirm(`Usunąć "${name}"?`)) {
-                delete games[name];
-                localStorage.setItem('rpg_games', JSON.stringify(games));
-                renderSlots();
-            }
-        }
-
-        function loadGame(name) {
-            activeSlot = name;
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('game-screen').classList.remove('hidden');
-            updateUI();
-        }
-
-        function addXP() {
-            if (activeSlot) {
-                games[activeSlot] += 20;
-                localStorage.setItem('rpg_games', JSON.stringify(games));
-                updateUI();
-            }
-        }
-
+        function loadGame(name) { activeSlot = name; showScreen('game-screen'); updateUI(); }
+        function addXP() { games[activeSlot] += 20; save(); updateUI(); }
         function updateUI() {
             const xp = games[activeSlot];
             const lvl = Math.floor(xp / 100);
-            const progress = xp % 100;
+            const prog = xp % 100;
             document.getElementById('current-player-name').innerText = activeSlot;
             document.getElementById('lvl-tag').innerText = `LVL ${lvl}`;
-            document.getElementById('fill').style.width = `${progress}%`;
-            document.getElementById('xp-info').innerText = `XP: ${progress} / 100`;
+            document.getElementById('fill').style.width = prog + "%";
+            document.getElementById('xp-info').innerText = `XP: ${prog}/100`;
         }
 
-        function logout() {
-            activeSlot = null;
-            document.getElementById('game-screen').classList.add('hidden');
-            document.getElementById('login-screen').classList.remove('hidden');
-            renderSlots();
+        // --- Expense Logika ---
+        function createNewExpense() {
+            const name = document.getElementById('new-expense-name').value.toUpperCase().trim();
+            if (name && !expenses[name]) { expenses[name] = { spent: 0, budget: 0 }; save(); renderSlots(); document.getElementById('new-expense-name').value = ''; }
         }
+        function loadExpense(name) { activeExpense = name; showScreen('expense-screen'); updateExpenseUI(); }
+        function setBudget() {
+            let b = prompt("LIMIT?");
+            if(b) { expenses[activeExpense].budget = parseFloat(b); save(); updateExpenseUI(); }
+        }
+        function showNumpad() {
+            document.getElementById('numpad-container').classList.remove('hidden');
+            document.getElementById('add-expense-btn').classList.add('hidden');
+            currentInput = ""; document.getElementById('numpad-display').innerText = "0";
+        }
+        function pressNum(v) { if(v==='C') currentInput=""; else currentInput+=v; document.getElementById('numpad-display').innerText=currentInput||"0"; }
+        function confirmExpense() {
+            const v = parseFloat(currentInput);
+            if(!isNaN(v)) { expenses[activeExpense].spent += v; save(); updateExpenseUI(); }
+            document.getElementById('numpad-container').classList.add('hidden');
+            document.getElementById('add-expense-btn').classList.remove('hidden');
+        }
+        function updateExpenseUI() {
+            const d = expenses[activeExpense];
+            document.getElementById('current-expense-title').innerText = activeExpense;
+            document.getElementById('money-info').innerText = `${d.spent}/${d.budget} PLN`;
+            let p = d.budget > 0 ? (d.spent / d.budget) * 100 : 0;
+            const bar = document.getElementById('money-fill');
+            bar.style.width = Math.min(p, 100) + "%";
+            bar.className = (d.spent > d.budget) ? "bg-red" : "";
+        }
+
+        // --- To-Do ---
+        function renderToDo() {
+            const list = document.getElementById('todo-list');
+            list.innerHTML = '';
+            todos.forEach((t, i) => {
+                list.innerHTML += `<div class="todo-item">
+                    <div class="custom-checkbox ${t.done ? 'checked' : ''}" onclick="toggleToDo(${i})"></div>
+                    <span class="todo-text ${t.done ? 'done' : ''}">${t.text}</span>
+                    <button style="background:none; border:none; color:var(--red); font-size:10px;" onclick="deleteToDo(${i})">X</button>
+                </div>`;
+            });
+        }
+        function addToDo() {
+            const val = document.getElementById('todo-input').value.toUpperCase().trim();
+            if(val) { todos.push({text: val, done: false}); save(); renderToDo(); document.getElementById('todo-input').value=''; }
+        }
+        function toggleToDo(i) { todos[i].done = !todos[i].done; save(); renderToDo(); }
+        function deleteToDo(i) { todos.splice(i,1); save(); renderToDo(); }
+
+        function showScreen(id) { document.querySelectorAll('.container').forEach(c=>c.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
+        function logout() { showScreen('login-screen'); renderSlots(); }
+        function deleteGame(n) { if(confirm('USUNĄĆ?')) { delete games[n]; save(); renderSlots(); } }
+        function deleteExpense(n) { if(confirm('USUNĄĆ?')) { delete expenses[n]; save(); renderSlots(); } }
 
         renderSlots();
         renderToDo();
