@@ -126,10 +126,6 @@
             cursor: pointer; 
             word-break: break-word;
             overflow-wrap: anywhere;
-            color: #ffffff !important; /* Wymuszony biały kolor dla wszystkich */
-        }
-        .todo-text.long-text {
-            font-size: 12px; /* Zachowałem powiększenie dla czytelności */
             color: #ffffff !important;
         }
         .todo-text.done { text-decoration: line-through; color: #555 !important; }
@@ -214,21 +210,23 @@
             list.innerHTML = '';
             for (let name in games) {
                 const lvl = Math.floor(games[name] / 100);
-                list.innerHTML += <div class="slot-item">
-                    <div class="slot-info">${name}<br><span style="color:var(--blue)">LVL ${lvl}</span></div>
-                    <button class="btn-blue" style="width:auto; padding:8px;" onclick="loadGame('${name}')">GRAJ</button>
-                    <button class="btn-red" style="width:30px; padding:8px;" onclick="deleteGame('${name}')">X</button>
-                </div>;
+                list.innerHTML += `
+                    <div class="slot-item">
+                        <div class="slot-info">${name}<br><span style="color:var(--blue)">LVL ${lvl}</span></div>
+                        <button class="btn-blue" style="width:auto; padding:8px;" onclick="loadGame('${name}')">GRAJ</button>
+                        <button class="btn-red" style="width:30px; padding:8px;" onclick="deleteGame('${name}')">X</button>
+                    </div>`;
             }
 
             const expList = document.getElementById('expenses-slots');
             expList.innerHTML = '';
             for (let name in expenses) {
-                expList.innerHTML += <div class="slot-item">
-                    <div class="slot-info">${name}</div>
-                    <button class="btn-blue" style="width:auto; padding:8px;" onclick="loadExpense('${name}')">GRAJ</button>
-                    <button class="btn-red" style="width:30px; padding:8px;" onclick="deleteExpense('${name}')">X</button>
-                </div>;
+                expList.innerHTML += `
+                    <div class="slot-item">
+                        <div class="slot-info">${name}</div>
+                        <button class="btn-blue" style="width:auto; padding:8px;" onclick="loadExpense('${name}')">GRAJ</button>
+                        <button class="btn-red" style="width:30px; padding:8px;" onclick="deleteExpense('${name}')">X</button>
+                    </div>`;
             }
         }
 
@@ -236,14 +234,12 @@
             const list = document.getElementById('todo-list');
             list.innerHTML = '';
             todos.forEach((t, i) => {
-                const isLong = t.text.length > 32;
-                const longClass = isLong ? 'long-text' : '';
-
-                list.innerHTML += <div class="todo-item">
-                    <div class="custom-checkbox ${t.done ? 'checked' : ''}" onclick="toggleToDo(${i})"></div>
-                    <span class="todo-text ${t.done ? 'done' : ''} ${longClass}" onclick="editToDo(${i})">${t.text}</span>
-                    <button class="btn-delete-todo" onclick="deleteToDo(${i})">X</button>
-                </div>;
+                list.innerHTML += `
+                    <div class="todo-item">
+                        <div class="custom-checkbox ${t.done ? 'checked' : ''}" onclick="toggleToDo(${i})"></div>
+                        <span class="todo-text ${t.done ? 'done' : ''}" onclick="editToDo(${i})">${t.text}</span>
+                        <button class="btn-delete-todo" onclick="deleteToDo(${i})">X</button>
+                    </div>`;
             });
         }
 
@@ -257,7 +253,12 @@
 
         function addToDo() {
             const val = document.getElementById('todo-input').value.toUpperCase().trim();
-            if(val) { todos.push({text: val, done: false}); save(); renderToDo(); document.getElementById('todo-input').value=''; }
+            if(val) { 
+                todos.push({text: val, done: false}); 
+                save(); 
+                renderToDo(); 
+                document.getElementById('todo-input').value=''; 
+            }
         }
 
         function toggleToDo(i) { todos[i].done = !todos[i].done; save(); renderToDo(); }
@@ -265,51 +266,74 @@
 
         function createNewGame() {
             const name = document.getElementById('new-slot-name').value.toUpperCase().trim();
-            if (name && !games[name]) { games[name] = 0; save(); renderSlots(); document.getElementById('new-slot-name').value = ''; }
+            if (name && !games[name]) { 
+                games[name] = 0; 
+                save(); 
+                renderSlots(); 
+                document.getElementById('new-slot-name').value = ''; 
+            }
         }
+        
         function loadGame(name) { activeSlot = name; showScreen('game-screen'); updateUI(); }
         function addXP() { games[activeSlot] += 20; save(); updateUI(); }
+        
         function updateUI() {
             const xp = games[activeSlot];
             const lvl = Math.floor(xp / 100);
             const prog = xp % 100;
             document.getElementById('current-player-name').innerText = activeSlot;
-            document.getElementById('lvl-tag').innerText = LVL ${lvl};
+            document.getElementById('lvl-tag').innerText = `LVL ${lvl}`;
             document.getElementById('fill').style.width = prog + "%";
-            document.getElementById('xp-info').innerText = XP: ${prog}/100;
+            document.getElementById('xp-info').innerText = `XP: ${prog}/100`;
         }
 
         function createNewExpense() {
             const name = document.getElementById('new-expense-name').value.toUpperCase().trim();
-            if (name && !expenses[name]) { expenses[name] = { spent: 0, budget: 0 }; save(); renderSlots(); document.getElementById('new-expense-name').value = ''; }
+            if (name && !expenses[name]) { 
+                expenses[name] = { spent: 0, budget: 0 }; 
+                save(); 
+                renderSlots(); 
+                document.getElementById('new-expense-name').value = ''; 
+            }
         }
+
         function loadExpense(name) { activeExpense = name; showScreen('expense-screen'); updateExpenseUI(); }
+        
         function setBudget() {
             let b = prompt("LIMIT?");
             if(b) { expenses[activeExpense].budget = parseFloat(b); save(); updateExpenseUI(); }
         }
+
         function showNumpad() {
             document.getElementById('numpad-container').classList.remove('hidden');
             document.getElementById('add-expense-btn').classList.add('hidden');
             currentInput = ""; document.getElementById('numpad-display').innerText = "0";
         }
+
         function pressNum(v) { if(v==='C') currentInput=""; else currentInput+=v; document.getElementById('numpad-display').innerText=currentInput||"0"; }
+        
         function confirmExpense() {
             const v = parseFloat(currentInput);
             if(!isNaN(v)) { expenses[activeExpense].spent += v; save(); updateExpenseUI(); }
             document.getElementById('numpad-container').classList.add('hidden');
             document.getElementById('add-expense-btn').classList.remove('hidden');
         }
+
         function updateExpenseUI() {
             const d = expenses[activeExpense];
             document.getElementById('current-expense-title').innerText = activeExpense;
-            document.getElementById('money-info').innerText = ${d.spent}/${d.budget} PLN;
+            document.getElementById('money-info').innerText = `${d.spent}/${d.budget} PLN`;
             let p = d.budget > 0 ? (d.spent / d.budget) * 100 : 0;
             const bar = document.getElementById('money-fill');
             bar.style.width = Math.min(p, 100) + "%";
             bar.className = (d.spent > d.budget) ? "bg-red" : "";
         }
-        function showScreen(id) { document.querySelectorAll('.container').forEach(c=>c.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
+
+        function showScreen(id) { 
+            document.querySelectorAll('.container').forEach(c=>c.classList.add('hidden')); 
+            document.getElementById(id).classList.remove('hidden'); 
+        }
+
         function logout() { showScreen('login-screen'); renderSlots(); }
         function deleteGame(n) { if(confirm('USUNĄĆ?')) { delete games[n]; save(); renderSlots(); } }
         function deleteExpense(n) { if(confirm('USUNĄĆ?')) { delete expenses[n]; save(); renderSlots(); } }
