@@ -1,321 +1,294 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Life RPG Pixel Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <style>
-        :root { 
-            --bg: #1a1a2e; 
-            --card: #242442; 
-            --blue: #4d9be6; 
-            --green: #48cd48; 
-            --red: #e64d4d; 
-            --text: #ffffff;
-            --border: #4d4d80;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Life RPG Pixel Edition</title>
 
-        body { 
-            margin: 0; 
-            font-family: 'Press Start 2P', cursive; 
-            background-color: var(--bg);
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
-            color: var(--text); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            overflow: hidden; 
-            image-rendering: pixelated;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
-        .container { 
-            width: 90%; 
-            max-width: 420px;
-            background: var(--card); 
-            padding: 20px; 
-            border: 4px solid var(--border);
-            box-shadow: 8px 8px 0px rgba(0,0,0,0.5);
-            max-height: 90vh; 
-            overflow-y: auto;
-            position: relative;
-        }
+<style>
+:root {
+    --bg:#1a1a2e;
+    --card:#242442;
+    --blue:#4d9be6;
+    --green:#48cd48;
+    --red:#e64d4d;
+    --border:#4d4d80;
+    --text:#fff;
+}
 
-        .hidden { display: none !important; }
+* { box-sizing: border-box; }
 
-        .main-title {
-            color: #fff; 
-            font-size: 16px; 
-            margin-bottom: 30px; 
-            text-align: center;
-            display: block;
-            width: 100%;
-        }
+body {
+    margin:0;
+    font-family:'Press Start 2P', cursive;
+    background:var(--bg);
+    background-image:
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size:20px 20px;
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
 
-        h1.section-title { 
-            font-size: 10px; 
-            line-height: 1.5;
-            margin: 25px 0 15px;
-            color: #ffd700;
-            text-shadow: 2px 2px 0px #000;
-        }
+.container {
+    width:90%;
+    max-width:420px;
+    background:var(--card);
+    padding:20px;
+    border:4px solid var(--border);
+    box-shadow:8px 8px 0 rgba(0,0,0,.5);
+    max-height:90vh;
+    overflow-y:auto;
+}
 
-        input { 
-            width: 100%; padding: 12px; margin: 10px 0; border: 4px solid var(--border);
-            background: #000; color: var(--green); box-sizing: border-box; 
-            font-family: 'Press Start 2P', cursive; font-size: 9px;
-        }
+.hidden { display:none; }
 
-        button { 
-            padding: 12px; border: 4px solid #000; font-family: 'Press Start 2P', cursive; 
-            font-size: 9px; cursor: pointer; position: relative;
-            box-shadow: inset -4px -4px 0px rgba(0,0,0,0.3);
-            margin-bottom: 5px;
-        }
-        button:active { transform: translate(2px, 2px); box-shadow: none; }
+.main-title {
+    text-align:center;
+    font-size:16px;
+    margin-bottom:20px;
+}
 
-        .btn-blue { background: var(--blue); color: white; width: 100%; }
-        .btn-green { background: var(--green); color: white; width: 100%; }
-        .btn-red { background: var(--red); color: white; }
+.section-title {
+    font-size:10px;
+    margin:25px 0 15px;
+    color:#ffd700;
+}
 
-        .slot-item { 
-            background: rgba(0,0,0,0.3); padding: 12px; margin: 10px 0; 
-            border: 2px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center; gap: 8px;
-        }
+input {
+    width:100%;
+    padding:12px;
+    margin-bottom:6px;
+    background:#000;
+    color:var(--green);
+    border:4px solid var(--border);
+    font-family:'Press Start 2P';
+    font-size:9px;
+}
 
-        .slot-info { flex-grow: 1; text-align: left; font-size: 8px; line-height: 1.6; }
+button {
+    width:100%;
+    padding:12px;
+    font-family:'Press Start 2P';
+    font-size:9px;
+    cursor:pointer;
+    border:4px solid #000;
+    margin-bottom:5px;
+}
 
-        .progress-bar { width: 100%; height: 20px; background: #000; border: 3px solid var(--border); margin: 15px 0; position: relative; }
-        #fill, #money-fill { height: 100%; transition: 0.3s; }
-        #fill { background: var(--blue); }
-        .bg-red { background: var(--red) !important; }
+.btn-green { background:var(--green); color:#fff; }
+.btn-blue { background:var(--blue); color:#fff; }
+.btn-red { background:var(--red); color:#fff; }
 
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; }
-        .numpad button { background: #334155; font-size: 12px; padding: 15px 0; }
-        .numpad .btn-enter { grid-column: span 3; background: var(--green); font-size: 10px; }
+.slot-item {
+    background:rgba(0,0,0,.3);
+    padding:12px;
+    margin-bottom:8px;
+    border:2px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
 
-        .todo-item { 
-            display: flex; 
-            align-items: center; 
-            background: rgba(0,0,0,0.2); 
-            padding: 14px; 
-            border: 2px solid var(--border); 
-            margin-bottom: 8px; 
-            gap: 14px; 
-        }
-        .custom-checkbox { 
-            width: 24px; 
-            height: 24px; 
-            border: 3px solid var(--blue); 
-            background: #000; 
-            cursor: pointer; 
-            flex-shrink: 0;
-        }
-        .custom-checkbox.checked { background: var(--green); }
-        
-        .todo-text { 
-            flex-grow: 1; 
-            text-align: left; 
-            font-size: 11px; 
-            line-height: 1.4; 
-            cursor: pointer; 
-            word-break: break-word;
-            overflow-wrap: anywhere;
-            color: #ffffff !important; /* Wymuszony biały kolor dla wszystkich */
-        }
-        .todo-text.long-text {
-            font-size: 12px; /* Zachowałem powiększenie dla czytelności */
-            color: #ffffff !important;
-        }
-        .todo-text.done { text-decoration: line-through; color: #555 !important; }
+.slot-info { font-size:8px; line-height:1.6; }
 
-        .btn-delete-todo {
-            background: none; border: none; color: var(--red); 
-            font-family: 'Press Start 2P', cursive; font-size: 11px; 
-            cursor: pointer; padding: 5px;
-        }
+.todo-item {
+    display:flex;
+    gap:10px;
+    padding:10px;
+    border:2px solid var(--border);
+    margin-bottom:6px;
+    background:rgba(0,0,0,.3);
+}
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border: 2px solid var(--card); }
-    </style>
+.checkbox {
+    width:20px;
+    height:20px;
+    border:3px solid var(--blue);
+    cursor:pointer;
+}
+
+.checkbox.done { background:var(--green); }
+
+.todo-text {
+    flex:1;
+    font-size:10px;
+}
+
+.todo-text.done { text-decoration:line-through; color:#555; }
+
+.timer-box {
+    text-align:center;
+    margin-top:10px;
+}
+
+#timer-display {
+    font-size:18px;
+    margin:15px 0;
+    color:var(--green);
+}
+</style>
 </head>
+
 <body>
 
-    <div id="login-screen" class="container">
-        <span class="main-title">LIFE RPG</span>
-        
-        <h1 class="section-title">[ WYDATKI ]</h1>
-        <div id="expenses-slots"></div>
-        <input type="text" id="new-expense-name" placeholder="NAZWA...">
-        <button class="btn-green" onclick="createNewExpense()">+ DODAJ</button>
+<div id="login-screen" class="container">
+    <div class="main-title">LIFE RPG</div>
 
-        <h1 class="section-title">[ ZADANIA ]</h1>
-        <div id="slots-list"></div>
-        <input type="text" id="new-slot-name" placeholder="ZADANIE...">
-        <button class="btn-green" onclick="createNewGame()">+ DODAJ</button>
+    <h1 class="section-title">[ ZADANIA ]</h1>
+    <div id="slots"></div>
+    <input id="new-game" placeholder="ZADANIE...">
+    <button class="btn-green" onclick="addGame()">+ DODAJ</button>
 
-        <h1 class="section-title">[ TO-DO LIST ]</h1>
-        <div id="todo-list"></div>
-        <div style="display: flex; gap: 5px;">
-            <input type="text" id="todo-input" placeholder="WPISZ..." style="margin: 0; font-size: 10px;">
-            <button class="btn-blue" onclick="addToDo()">+</button>
-        </div>
+    <h1 class="section-title">[ TO-DO ]</h1>
+    <div id="todo"></div>
+    <input id="todo-input" placeholder="WPISZ...">
+    <button class="btn-blue" onclick="addTodo()">+</button>
+
+    <h1 class="section-title">[ TIMER ]</h1>
+
+    <input id="focus-input" type="number" placeholder="FOCUS (min)">
+    <input id="break-input" type="number" placeholder="BREAK (min)">
+    <button class="btn-green" onclick="startPomodoro()">POMODORO</button>
+
+    <hr style="margin:15px 0; border:1px solid var(--border);">
+
+    <input id="timer-input" type="number" placeholder="TIMER (min)">
+    <button class="btn-blue" onclick="startTimer()">TIMER</button>
+
+    <div class="timer-box">
+        <div id="timer-display">00:00</div>
+        <div id="timer-mode" style="font-size:8px;color:#ffd700;">TRYB: ---</div>
+        <button class="btn-blue" onclick="pauseTimer()">PAUZA</button>
+        <button class="btn-red" onclick="resetTimer()">RESET</button>
     </div>
+</div>
 
-    <div id="game-screen" class="container hidden">
-        <h2 id="current-player-name" style="font-size: 12px; text-align: center;">NAME</h2>
-        <div id="lvl-tag" style="font-size: 18px; color: #ffd700; margin: 20px 0; text-align: center;">LVL 0</div>
-        <div class="progress-bar"><div id="fill"></div></div>
-        <div id="xp-info" style="font-size: 8px; margin-bottom: 20px; text-align: center;">XP: 0/100</div>
-        <button class="btn-blue" style="padding: 20px;" onclick="addXP()">ZROBIONE! +20XP</button>
-        <button style="background:none; border:none; color:#555; margin-top: 20px; width:100%;" onclick="logout()">[ WSTECZ ]</button>
-    </div>
+<script>
+let games = JSON.parse(localStorage.getItem("games")) || {};
+let todos = JSON.parse(localStorage.getItem("todos")) || [];
 
-    <div id="expense-screen" class="container hidden">
-        <h2 id="current-expense-title" style="font-size: 12px; text-align: center;">SKLEP</h2>
-        <div class="progress-bar"><div id="money-fill" style="width: 0%; background: var(--green);"></div></div>
-        <div id="money-info" style="font-size: 12px; margin-bottom: 20px; text-align: center;">0/0 PLN</div>
-        <button class="btn-blue" onclick="setBudget()">USTAW LIMIT</button>
-        <div id="numpad-container" class="hidden">
-            <div id="numpad-display" style="font-size: 16px; margin: 15px 0; background: #000; padding: 10px; border: 2px solid var(--blue); color: var(--green); text-align: center;">0</div>
-            <div class="numpad">
-                <button onclick="pressNum(1)">1</button><button onclick="pressNum(2)">2</button><button onclick="pressNum(3)">3</button>
-                <button onclick="pressNum(4)">4</button><button onclick="pressNum(5)">5</button><button onclick="pressNum(6)">6</button>
-                <button onclick="pressNum(7)">7</button><button onclick="pressNum(8)">8</button><button onclick="pressNum(9)">9</button>
-                <button onclick="pressNum('C')" style="background:var(--red)">C</button><button onclick="pressNum(0)">0</button><button onclick="pressNum('.')">.</button>
-                <button class="btn-enter" onclick="confirmExpense()">ENTER</button>
-            </div>
-        </div>
-        <button id="add-expense-btn" class="btn-green" style="margin-top: 20px;" onclick="showNumpad()">DODAJ KWOTE</button>
-        <button style="background:none; border:none; color:#555; margin-top: 20px; width:100%;" onclick="logout()">[ WSTECZ ]</button>
-    </div>
+let timerTime = 0;
+let timerInterval = null;
+let timerMode = "NONE";
+let breakTime = 0;
 
-    <script>
-        let games = JSON.parse(localStorage.getItem('rpg_games')) || {};
-        let expenses = JSON.parse(localStorage.getItem('rpg_expenses')) || {};
-        let todos = JSON.parse(localStorage.getItem('rpg_todo')) || [];
-        let activeSlot = null;
-        let activeExpense = null;
-        let currentInput = "";
+function save() {
+    localStorage.setItem("games", JSON.stringify(games));
+    localStorage.setItem("todos", JSON.stringify(todos));
+}
 
-        function save() {
-            localStorage.setItem('rpg_games', JSON.stringify(games));
-            localStorage.setItem('rpg_expenses', JSON.stringify(expenses));
-            localStorage.setItem('rpg_todo', JSON.stringify(todos));
-        }
+function renderGames() {
+    const el = document.getElementById("slots");
+    el.innerHTML = "";
+    for (let g in games) {
+        el.innerHTML += `
+        <div class="slot-item">
+            <div class="slot-info">${g}<br>XP: ${games[g]}</div>
+            <button class="btn-blue" onclick="games['${g}']+=20;save();renderGames()">+20XP</button>
+        </div>`;
+    }
+}
 
-        function renderSlots() {
-            const list = document.getElementById('slots-list');
-            list.innerHTML = '';
-            for (let name in games) {
-                const lvl = Math.floor(games[name] / 100);
-                list.innerHTML += `<div class="slot-item">
-                    <div class="slot-info">${name}<br><span style="color:var(--blue)">LVL ${lvl}</span></div>
-                    <button class="btn-blue" style="width:auto; padding:8px;" onclick="loadGame('${name}')">GRAJ</button>
-                    <button class="btn-red" style="width:30px; padding:8px;" onclick="deleteGame('${name}')">X</button>
-                </div>`;
+function addGame() {
+    const val = document.getElementById("new-game").value.trim();
+    if(val && !games[val]) {
+        games[val]=0;
+        save(); renderGames();
+        document.getElementById("new-game").value="";
+    }
+}
+
+function renderTodo() {
+    const el = document.getElementById("todo");
+    el.innerHTML="";
+    todos.forEach((t,i)=>{
+        el.innerHTML+=`
+        <div class="todo-item">
+            <div class="checkbox ${t.done?'done':''}" onclick="toggleTodo(${i})"></div>
+            <div class="todo-text ${t.done?'done':''}">${t.text}</div>
+        </div>`;
+    });
+}
+
+function addTodo() {
+    const val = document.getElementById("todo-input").value.trim();
+    if(val) {
+        todos.push({text:val,done:false});
+        save(); renderTodo();
+        document.getElementById("todo-input").value="";
+    }
+}
+
+function toggleTodo(i){
+    todos[i].done=!todos[i].done;
+    save(); renderTodo();
+}
+
+function updateTimerUI() {
+    const m = String(Math.floor(timerTime/60)).padStart(2,'0');
+    const s = String(timerTime%60).padStart(2,'0');
+    document.getElementById("timer-display").innerText = `${m}:${s}`;
+    document.getElementById("timer-mode").innerText = `TRYB: ${timerMode}`;
+}
+
+function runTimer() {
+    updateTimerUI();
+    timerInterval = setInterval(()=>{
+        timerTime--;
+        updateTimerUI();
+        if(timerTime<=0){
+            clearInterval(timerInterval);
+            timerInterval=null;
+
+            if(timerMode==="FOCUS"){
+                alert("KONIEC FOCUSU +20 XP");
+                Object.keys(games)[0] && (games[Object.keys(games)[0]]+=20);
+                save(); renderGames();
+                timerMode="BREAK";
+                timerTime=breakTime;
+                runTimer();
+            } else {
+                alert("KONIEC");
+                timerMode="NONE";
+                updateTimerUI();
             }
+        }
+    },1000);
+}
 
-            const expList = document.getElementById('expenses-slots');
-            expList.innerHTML = '';
-            for (let name in expenses) {
-                expList.innerHTML += `<div class="slot-item">
-                    <div class="slot-info">${name}</div>
-                    <button class="btn-blue" style="width:auto; padding:8px;" onclick="loadExpense('${name}')">GRAJ</button>
-                    <button class="btn-red" style="width:30px; padding:8px;" onclick="deleteExpense('${name}')">X</button>
-                </div>`;
-            }
-        }
+function startPomodoro(){
+    pauseTimer();
+    const f = +focus-input.value;
+    const b = +break-input.value;
+    if(!f||!b) return alert("USTAW CZASY");
+    timerMode="FOCUS";
+    timerTime=f*60;
+    breakTime=b*60;
+    runTimer();
+}
 
-        function renderToDo() {
-            const list = document.getElementById('todo-list');
-            list.innerHTML = '';
-            todos.forEach((t, i) => {
-                const isLong = t.text.length > 32;
-                const longClass = isLong ? 'long-text' : '';
+function startTimer(){
+    pauseTimer();
+    const t = +timer-input.value;
+    if(!t) return alert("USTAW TIMER");
+    timerMode="TIMER";
+    timerTime=t*60;
+    runTimer();
+}
 
-                list.innerHTML += `<div class="todo-item">
-                    <div class="custom-checkbox ${t.done ? 'checked' : ''}" onclick="toggleToDo(${i})"></div>
-                    <span class="todo-text ${t.done ? 'done' : ''} ${longClass}" onclick="editToDo(${i})">${t.text}</span>
-                    <button class="btn-delete-todo" onclick="deleteToDo(${i})">X</button>
-                </div>`;
-            });
-        }
+function pauseTimer(){ clearInterval(timerInterval); timerInterval=null; }
+function resetTimer(){ pauseTimer(); timerTime=0; timerMode="NONE"; updateTimerUI(); }
 
-        function editToDo(index) {
-            const newText = prompt("EDYTUJ ZADANIE:", todos[index].text);
-            if (newText !== null && newText.trim() !== "") {
-                todos[index].text = newText.toUpperCase().trim();
-                save(); renderToDo();
-            }
-        }
+renderGames();
+renderTodo();
+updateTimerUI();
+</script>
 
-        function addToDo() {
-            const val = document.getElementById('todo-input').value.toUpperCase().trim();
-            if(val) { todos.push({text: val, done: false}); save(); renderToDo(); document.getElementById('todo-input').value=''; }
-        }
-
-        function toggleToDo(i) { todos[i].done = !todos[i].done; save(); renderToDo(); }
-        function deleteToDo(i) { todos.splice(i,1); save(); renderToDo(); }
-
-        function createNewGame() {
-            const name = document.getElementById('new-slot-name').value.toUpperCase().trim();
-            if (name && !games[name]) { games[name] = 0; save(); renderSlots(); document.getElementById('new-slot-name').value = ''; }
-        }
-        function loadGame(name) { activeSlot = name; showScreen('game-screen'); updateUI(); }
-        function addXP() { games[activeSlot] += 20; save(); updateUI(); }
-        function updateUI() {
-            const xp = games[activeSlot];
-            const lvl = Math.floor(xp / 100);
-            const prog = xp % 100;
-            document.getElementById('current-player-name').innerText = activeSlot;
-            document.getElementById('lvl-tag').innerText = `LVL ${lvl}`;
-            document.getElementById('fill').style.width = prog + "%";
-            document.getElementById('xp-info').innerText = `XP: ${prog}/100`;
-        }
-
-        function createNewExpense() {
-            const name = document.getElementById('new-expense-name').value.toUpperCase().trim();
-            if (name && !expenses[name]) { expenses[name] = { spent: 0, budget: 0 }; save(); renderSlots(); document.getElementById('new-expense-name').value = ''; }
-        }
-        function loadExpense(name) { activeExpense = name; showScreen('expense-screen'); updateExpenseUI(); }
-        function setBudget() {
-            let b = prompt("LIMIT?");
-            if(b) { expenses[activeExpense].budget = parseFloat(b); save(); updateExpenseUI(); }
-        }
-        function showNumpad() {
-            document.getElementById('numpad-container').classList.remove('hidden');
-            document.getElementById('add-expense-btn').classList.add('hidden');
-            currentInput = ""; document.getElementById('numpad-display').innerText = "0";
-        }
-        function pressNum(v) { if(v==='C') currentInput=""; else currentInput+=v; document.getElementById('numpad-display').innerText=currentInput||"0"; }
-        function confirmExpense() {
-            const v = parseFloat(currentInput);
-            if(!isNaN(v)) { expenses[activeExpense].spent += v; save(); updateExpenseUI(); }
-            document.getElementById('numpad-container').classList.add('hidden');
-            document.getElementById('add-expense-btn').classList.remove('hidden');
-        }
-        function updateExpenseUI() {
-            const d = expenses[activeExpense];
-            document.getElementById('current-expense-title').innerText = activeExpense;
-            document.getElementById('money-info').innerText = `${d.spent}/${d.budget} PLN`;
-            let p = d.budget > 0 ? (d.spent / d.budget) * 100 : 0;
-            const bar = document.getElementById('money-fill');
-            bar.style.width = Math.min(p, 100) + "%";
-            bar.className = (d.spent > d.budget) ? "bg-red" : "";
-        }
-        function showScreen(id) { document.querySelectorAll('.container').forEach(c=>c.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
-        function logout() { showScreen('login-screen'); renderSlots(); }
-        function deleteGame(n) { if(confirm('USUNĄĆ?')) { delete games[n]; save(); renderSlots(); } }
-        function deleteExpense(n) { if(confirm('USUNĄĆ?')) { delete expenses[n]; save(); renderSlots(); } }
-
-        renderSlots();
-        renderToDo();
-    </script>
 </body>
 </html>
